@@ -1,1 +1,250 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ฝึกคิดเลขไว 1 นาที | ติวกะพี่ต้น</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 12px; background: #f3f6fa; color: #1e293b; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+    .app { width: 100%; max-width: 440px; background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); }
+    .hidden { display: none !important; }
+    h1 { font-size: 22px; text-align: center; margin: 0 0 6px; color: #0f172a; }
+    .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 20px; }
+    label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
+    input, select { width: 100%; padding: 12px 14px; font-size: 16px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; outline: none; }
+    input:focus, select:focus { border-color: #2563eb; }
+    .btn { width: 100%; padding: 14px; font-size: 18px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: transform 0.05s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-outline { background: #eff6ff; color: #1d4ed8; margin-top: 10px; }
 
+    /* Drill Screen */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 8px; }
+    .timer-badge { background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 999px; font-size: 15px; }
+    .progress-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 18px; }
+    .progress-fill { height: 100%; background: #2563eb; width: 100%; transition: width 0.2s linear; }
+    .question-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 22px 12px; text-align: center; margin-bottom: 14px; }
+    .question-text { font-size: 38px; font-weight: 800; color: #0f172a; letter-spacing: 1px; }
+    .answer-display { width: 100%; height: 56px; background: #fff; border: 2px solid #94a3b8; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: #2563eb; margin-bottom: 14px; }
+
+    /* Keypad */
+    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .key { padding: 16px 0; font-size: 24px; font-weight: 700; border: none; border-radius: 14px; background: #f1f5f9; color: #0f172a; cursor: pointer; }
+    .key:active { background: #cbd5e1; }
+    .key-del { background: #fee2e2; color: #dc2626; font-size: 18px; }
+    .key-ok { background: #16a34a; color: #fff; font-size: 18px; }
+
+    /* Summary */
+    .score-big { font-size: 48px; font-weight: 800; color: #2563eb; text-align: center; margin: 10px 0; }
+    .stat-card { background: #f8fafc; border-radius: 14px; padding: 14px; margin-bottom: 16px; font-size: 15px; line-height: 1.7; }
+    .cta-box { margin-top: 16px; padding: 14px; background: #eff6ff; border-radius: 14px; text-align: center; font-size: 14px; color: #1e40af; }
+    .cta-box a { display: inline-block; margin-top: 8px; padding: 10px 18px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- หน้าแรก: ลงชื่อ -->
+    <div id="screen-start">
+      <h1>ฝึกคิดเลขไว 1 นาที</h1>
+      <div class="subtitle">ชุดละ 15 ข้อ • ทำต่อเนื่อง 5 ชุด (สถาบันติวกะพี่ต้น)</div>
+      <label for="nickname">ชื่อเล่นนักเรียน</label>
+      <input type="text" id="nickname" placeholder="เช่น น้องต้นกล้า">
+      <label for="grade">ระดับชั้น</label>
+      <select id="grade">
+        <option value="p1-3">ประถม 1 – 3 (จำนวนเต็ม)</option>
+        <option value="p4-6">ประถม 4 – 6 (เร็วๆ นี้)</option>
+        <option value="m1-3">มัธยม 1 – 3 (เร็วๆ นี้)</option>
+      </select>
+      <button class="btn btn-primary" onclick="startSession()">เริ่มฝึกชุดที่ 1 / 5</button>
+    </div>
+
+    <!-- หน้าทำโจทย์ -->
+    <div id="screen-drill" class="hidden">
+      <div class="top-bar">
+        <span id="set-label">ชุดที่ 1/5</span>
+        <span id="q-label">ข้อ 1/15</span>
+        <span class="timer-badge" id="timer-text">60 วิ</span>
+      </div>
+      <div class="progress-bg"><div class="progress-fill" id="timer-bar"></div></div>
+      <div class="question-box">
+        <div class="question-text" id="question-text">12 + 8 = ?</div>
+      </div>
+      <div class="answer-display" id="answer-display"></div>
+      <div class="keypad">
+        <button class="key" onclick="pressKey('1')">1</button>
+        <button class="key" onclick="pressKey('2')">2</button>
+        <button class="key" onclick="pressKey('3')">3</button>
+        <button class="key" onclick="pressKey('4')">4</button>
+        <button class="key" onclick="pressKey('5')">5</button>
+        <button class="key" onclick="pressKey('6')">6</button>
+        <button class="key" onclick="pressKey('7')">7</button>
+        <button class="key" onclick="pressKey('8')">8</button>
+        <button class="key" onclick="pressKey('9')">9</button>
+        <button class="key key-del" onclick="delKey()">ลบ</button>
+        <button class="key" onclick="pressKey('0')">0</button>
+        <button class="key key-ok" onclick="submitAnswer()">ตกลง</button>
+      </div>
+    </div>
+
+    <!-- หน้าสรุปจบแต่ละชุด -->
+    <div id="screen-set-done" class="hidden">
+      <h1 id="set-done-title">จบชุดที่ 1 / 5</h1>
+      <div class="score-big" id="set-score">15 / 15</div>
+      <div class="stat-card" id="set-stat"></div>
+      <button class="btn btn-success" id="next-set-btn" onclick="nextSet()">ลุยชุดที่ 2 / 5 ต่อเลย!</button>
+    </div>
+
+    <!-- หน้าสรุปจบครบ 5 ชุด -->
+    <div id="screen-final" class="hidden">
+      <h1>เก่งมาก! ฝึกครบ 5 ชุดแล้ว</h1>
+      <div class="score-big" id="final-score">75 / 75</div>
+      <div class="stat-card" id="final-stat"></div>
+      <button class="btn btn-primary" onclick="location.reload()">ฝึกใหม่อีกครั้ง</button>
+      <div class="cta-box">
+        ฝึกคิดเลขคล่องแล้ว อยากต่อยอดโจทย์แข่งขันและปรับพื้นฐาน?<br>
+        <a href="https://www.krutontutor.com" target="_blank">ดูคอร์สเรียนที่ krutontutor.com</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_SETS = 5;
+    const QUESTIONS_PER_SET = 15;
+    const TIME_LIMIT = 60;
+
+    let studentName = localStorage.getItem('kt_name') || '';
+    let currentSet = 1;
+    let currentQ = 0;
+    let questions = [];
+    let currentInput = '';
+    let setScore = 0;
+    let totalScore = 0;
+    let totalTimeUsed = 0;
+    let timeLeft = TIME_LIMIT;
+    let timerId = null;
+
+    if (studentName) document.getElementById('nickname').value = studentName;
+
+    function showScreen(id) {
+      ['screen-start', 'screen-drill', 'screen-set-done', 'screen-final'].forEach(s => {
+        document.getElementById(s).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function generateQuestions() {
+      const list = [];
+      for (let i = 0; i < QUESTIONS_PER_SET; i++) {
+        const type = Math.floor(Math.random() * 2); // 0 = บวก, 1 = ลบ (ป.1-ป.3)
+        let a, b, ans, text;
+        if (type === 0) {
+          a = Math.floor(Math.random() * 40) + 5;
+          b = Math.floor(Math.random() * 40) + 5;
+          ans = a + b;
+          text = `${a} + ${b} = ?`;
+        } else {
+          a = Math.floor(Math.random() * 50) + 20;
+          b = Math.floor(Math.random() * (a - 5)) + 1;
+          ans = a - b;
+          text = `${a} - ${b} = ?`;
+        }
+        list.push({ text, ans });
+      }
+      return list;
+    }
+
+    function startSession() {
+      const nameInput = document.getElementById('nickname').value.trim();
+      studentName = nameInput || 'นักเรียน';
+      localStorage.setItem('kt_name', studentName);
+      currentSet = 1;
+      totalScore = 0;
+      totalTimeUsed = 0;
+      startSet();
+    }
+
+    function startSet() {
+      questions = generateQuestions();
+      currentQ = 0;
+      setScore = 0;
+      currentInput = '';
+      timeLeft = TIME_LIMIT;
+      showScreen('screen-drill');
+      updateUI();
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer-text').textContent = `${timeLeft} วิ`;
+        document.getElementById('timer-bar').style.width = `${(timeLeft / TIME_LIMIT) * 100}%`;
+        if (timeLeft <= 0) finishSet();
+      }, 1000);
+    }
+
+    function updateUI() {
+      document.getElementById('set-label').textContent = `ชุดที่ ${currentSet}/${TOTAL_SETS}`;
+      document.getElementById('q-label').textContent = `ข้อ ${currentQ + 1}/${QUESTIONS_PER_SET}`;
+      document.getElementById('timer-text').textContent = `${timeLeft} วิ`;
+      document.getElementById('timer-bar').style.width = `${(timeLeft / TIME_LIMIT) * 100}%`;
+      document.getElementById('question-text').textContent = questions[currentQ].text;
+      document.getElementById('answer-display').textContent = currentInput;
+    }
+
+    function pressKey(num) {
+      if (currentInput.length < 5) {
+        currentInput += num;
+        document.getElementById('answer-display').textContent = currentInput;
+      }
+    }
+
+    function delKey() {
+      currentInput = currentInput.slice(0, -1);
+      document.getElementById('answer-display').textContent = currentInput;
+    }
+
+    function submitAnswer() {
+      if (currentInput === '') return;
+      if (parseInt(currentInput, 10) === questions[currentQ].ans) setScore++;
+      currentInput = '';
+      currentQ++;
+      if (currentQ >= QUESTIONS_PER_SET) {
+        finishSet();
+      } else {
+        updateUI();
+      }
+    }
+
+    function finishSet() {
+      clearInterval(timerId);
+      const used = TIME_LIMIT - timeLeft;
+      totalScore += setScore;
+      totalTimeUsed += used;
+
+      if (currentSet < TOTAL_SETS) {
+        document.getElementById('set-done-title').textContent = `จบชุดที่ ${currentSet} / ${TOTAL_SETS}`;
+        document.getElementById('set-score').textContent = `${setScore} / ${QUESTIONS_PER_SET}`;
+        document.getElementById('set-stat').innerHTML = `
+          👤 น้อง: <b>${studentName}</b><br>
+          ⏱️ ใช้เวลาไป: <b>${used} วินาที</b>
+        `;
+        document.getElementById('next-set-btn').textContent = `ลุยชุดที่ ${currentSet + 1} / ${TOTAL_SETS} ต่อเลย!`;
+        showScreen('screen-set-done');
+      } else {
+        document.getElementById('final-score').textContent = `${totalScore} / ${TOTAL_SETS * QUESTIONS_PER_SET}`;
+        document.getElementById('final-stat').innerHTML = `
+          👤 น้อง: <b>${studentName}</b><br>
+          ⏱️ เวลารวม 5 ชุด: <b>${totalTimeUsed} วินาที</b><br>
+          🎯 ความแม่นยำ: <b>${Math.round((totalScore / (TOTAL_SETS * QUESTIONS_PER_SET)) * 100)}%</b>
+        `;
+        showScreen('screen-final');
+      }
+    }
+
+    function nextSet() {
+      currentSet++;
+      startSet();
+    }
+  </script>
+</body>
+</html>
