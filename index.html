@@ -10,9 +10,9 @@
     .app { width: 100%; max-width: 440px; background: #ffffff; border-radius: 20px; padding: 20px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); }
     .hidden { display: none !important; }
     h1 { font-size: 22px; text-align: center; margin: 0 0 6px; color: #0f172a; }
-    .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 20px; }
+    .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 18px; }
     label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
-    input, select { width: 100%; padding: 12px 14px; font-size: 16px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; outline: none; background: #fff; }
+    input, select { width: 100%; padding: 12px 14px; font-size: 16px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 14px; outline: none; background: #fff; }
     input:focus, select:focus { border-color: #2563eb; }
     .btn { width: 100%; padding: 14px; font-size: 18px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; transition: transform 0.05s; }
     .btn:active { transform: scale(0.98); }
@@ -20,26 +20,27 @@
     .btn-success { background: #16a34a; color: #fff; }
 
     /* Drill Screen */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 8px; }
-    .timer-badge { background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 999px; font-size: 15px; }
-    .progress-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 16px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px; }
+    .timer-badge { background: #fee2e2; color: #dc2626; padding: 4px 10px; border-radius: 999px; font-size: 14px; }
+    .progress-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 14px; }
     .progress-fill { height: 100%; background: #2563eb; width: 100%; transition: width 0.2s linear; }
-    .question-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 12px; min-height: 96px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    .question-hint { font-size: 13px; color: #64748b; margin-bottom: 4px; font-weight: 600; }
-    .question-text { font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; line-height: 1.25; }
-    .answer-display { width: 100%; height: 54px; background: #fff; border: 2px solid #94a3b8; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; color: #2563eb; margin-bottom: 12px; }
+    .question-box { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 18px 14px; text-align: center; margin-bottom: 12px; min-height: 104px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .question-hint { font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600; }
+    .question-text { font-size: 32px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; line-height: 1.3; }
+    .question-text.word-problem { font-size: 19px; font-weight: 700; text-align: left; line-height: 1.55; letter-spacing: 0; width: 100%; }
+    .answer-display { width: 100%; height: 52px; background: #fff; border: 2px solid #94a3b8; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: #2563eb; margin-bottom: 12px; }
 
     /* Keypad */
     .extra-keys { display: flex; gap: 10px; margin-bottom: 10px; }
-    .extra-keys .key { flex: 1; padding: 10px 0; font-size: 20px; background: #e0e7ff; color: #1e40af; }
+    .extra-keys .key { flex: 1; padding: 10px 0; font-size: 19px; background: #e0e7ff; color: #1e40af; }
     .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .key { padding: 15px 0; font-size: 24px; font-weight: 700; border: none; border-radius: 14px; background: #f1f5f9; color: #0f172a; cursor: pointer; }
+    .key { padding: 14px 0; font-size: 24px; font-weight: 700; border: none; border-radius: 14px; background: #f1f5f9; color: #0f172a; cursor: pointer; }
     .key:active { background: #cbd5e1; }
     .key-del { background: #fee2e2; color: #dc2626; font-size: 18px; }
     .key-ok { background: #16a34a; color: #fff; font-size: 18px; }
 
     /* Summary */
-    .score-big { font-size: 48px; font-weight: 800; color: #2563eb; text-align: center; margin: 10px 0; }
+    .score-big { font-size: 46px; font-weight: 800; color: #2563eb; text-align: center; margin: 10px 0; }
     .stat-card { background: #f8fafc; border-radius: 14px; padding: 14px; margin-bottom: 10px; font-size: 15px; line-height: 1.7; }
     .save-status { text-align: center; font-size: 13px; font-weight: 600; margin-bottom: 14px; min-height: 20px; }
     .cta-box { margin-top: 16px; padding: 14px; background: #eff6ff; border-radius: 14px; text-align: center; font-size: 14px; color: #1e40af; }
@@ -50,18 +51,29 @@
   <div class="app">
     <!-- หน้าแรก: ลงชื่อ -->
     <div id="screen-start">
-      <h1>ฝึกคิดเลขไว 1 นาที</h1>
-      <div class="subtitle">ชุดละ 15 ข้อ • ทำต่อเนื่อง 5 ชุด (สถาบันติวกะพี่ต้น)</div>
+      <h1>ฝึกคิดเลขไว | ติวกะพี่ต้น</h1>
+      <div class="subtitle">ทำต่อเนื่อง 5 ชุด • บันทึกสถิติอัตโนมัติ</div>
+
       <label for="nickname">ชื่อเล่นนักเรียน</label>
       <input type="text" id="nickname" placeholder="เช่น น้องต้นกล้า">
-      <label for="grade">ระดับชั้น</label>
+
+      <label for="grade">ระดับชั้น / โหมดฝึก</label>
       <select id="grade">
-        <option value="ป.1">ป.1 (บวก-ลบ จำนวนเต็ม)</option>
-        <option value="ป.2-ป.3">ป.2 – ป.3 (บวก ลบ คูณ หาร จำนวนเต็ม)</option>
-        <option value="ป.4-ป.5">ป.4 – ป.5 (จำนวนเต็ม ทศนิยม เศษส่วน)</option>
-        <option value="ป.6">ป.6 (จำนวนเต็ม ทศนิยม เศษส่วน เข้มข้น)</option>
-        <option value="ม.1-ม.3">ม.1 – ม.3 (พหุนาม)</option>
+        <option value="ป.1">ป.1 (บวก-ลบ จำนวนเต็ม • 15 ข้อ 1 นาที)</option>
+        <option value="ป.2-ป.3">ป.2 – ป.3 (บวก ลบ คูณ หาร • 15 ข้อ 1 นาที)</option>
+        <option value="ป.4-ป.5">ป.4 – ป.5 (จำนวนเต็ม ทศนิยม เศษส่วน • 15 ข้อ 1 นาที)</option>
+        <option value="ป.6">ป.6 คิดเลขไว (จำนวนเต็ม ทศนิยม เศษส่วน • 15 ข้อ 1 นาที)</option>
+        <option value="ป.6 โจทย์ปัญหา">ป.6 โจทย์ปัญหาคิดในใจ (แพทเทิร์นสอบเข้า • 5 ข้อ 2 นาที)</option>
+        <option value="ม.1-ม.3">ม.1 – ม.3 (พหุนาม • 15 ข้อ 1 นาที)</option>
       </select>
+
+      <label for="level">ระดับความยาก (Level)</label>
+      <select id="level">
+        <option value="Lv.1">Lv.1 — พื้นฐาน (ฝึกความคุ้นเคย)</option>
+        <option value="Lv.2">Lv.2 — ปานกลาง (เพิ่มความซับซ้อน)</option>
+        <option value="Lv.3">Lv.3 — ท้าทาย (ระดับแข่งขัน/สอบเข้า)</option>
+      </select>
+
       <button class="btn btn-primary" onclick="startSession()">เริ่มฝึกชุดที่ 1 / 5</button>
     </div>
 
@@ -79,7 +91,6 @@
       </div>
       <div class="answer-display" id="answer-display"></div>
 
-      <!-- ปุ่มพิเศษ (แสดงเฉพาะระดับชั้นที่ต้องใช้) -->
       <div class="extra-keys hidden" id="extra-keys">
         <button class="key hidden" id="key-minus" onclick="pressKey('-')">- (ลบ)</button>
         <button class="key hidden" id="key-dot" onclick="pressKey('.')">. (จุด)</button>
@@ -117,315 +128,4 @@
       <div class="score-big" id="final-score">75 / 75</div>
       <div class="stat-card" id="final-stat"></div>
       <div class="save-status" id="final-save-status"></div>
-      <button class="btn btn-primary" onclick="location.reload()">ฝึกใหม่อีกครั้ง</button>
-      <div class="cta-box">
-        ฝึกคิดเลขคล่องแล้ว อยากต่อยอดโจทย์แข่งขันและปรับพื้นฐาน?<br>
-        <a href="https://www.krutontutor.com" target="_blank">ดูคอร์สเรียนที่ krutontutor.com</a>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGZfr4SpJtZqbWwA3Vd7bIGb9Ll7hyFyZvJa3iYi8NA-p5lhH-XDUTHCGw8oEcrOOEqQ/exec';
-    const TOTAL_SETS = 5;
-    const QUESTIONS_PER_SET = 15;
-    const TIME_LIMIT = 60;
-
-    let studentName = localStorage.getItem('kt_name') || '';
-    let studentGrade = localStorage.getItem('kt_grade') || 'ป.1';
-    let currentSet = 1;
-    let currentQ = 0;
-    let questions = [];
-    let currentInput = '';
-    let setScore = 0;
-    let totalScore = 0;
-    let totalTimeUsed = 0;
-    let timeLeft = TIME_LIMIT;
-    let timerId = null;
-
-    if (studentName) document.getElementById('nickname').value = studentName;
-    if (studentGrade) document.getElementById('grade').value = studentGrade;
-
-    function rand(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function gcd(a, b) {
-      a = Math.abs(a); b = Math.abs(b);
-      while (b) { let t = b; b = a % b; a = t; }
-      return a;
-    }
-
-    function setupExtraKeys(grade) {
-      const box = document.getElementById('extra-keys');
-      const kMinus = document.getElementById('key-minus');
-      const kDot = document.getElementById('key-dot');
-      const kSlash = document.getElementById('key-slash');
-      [box, kMinus, kDot, kSlash].forEach(el => el.classList.add('hidden'));
-
-      if (grade === 'ป.4-ป.5') {
-        box.classList.remove('hidden');
-        kDot.classList.remove('hidden');
-        kSlash.classList.remove('hidden');
-      } else if (grade === 'ป.6') {
-        box.classList.remove('hidden');
-        kMinus.classList.remove('hidden');
-        kDot.classList.remove('hidden');
-        kSlash.classList.remove('hidden');
-      } else if (grade === 'ม.1-ม.3') {
-        box.classList.remove('hidden');
-        kMinus.classList.remove('hidden');
-      }
-    }
-
-    function generateQuestions(grade) {
-      const list = [];
-      for (let i = 0; i < QUESTIONS_PER_SET; i++) {
-        let hint = '', text = '', ans = '';
-
-        if (grade === 'ป.1') {
-          if (rand(0, 1) === 0) {
-            const a = rand(1, 15), b = rand(1, 15);
-            text = `${a} + ${b} = ?`; ans = String(a + b);
-          } else {
-            const a = rand(5, 20), b = rand(1, a);
-            text = `${a} - ${b} = ?`; ans = String(a - b);
-          }
-        }
-        else if (grade === 'ป.2-ป.3') {
-          const type = rand(0, 3);
-          if (type === 0) {
-            const a = rand(12, 85), b = rand(11, 75);
-            text = `${a} + ${b} = ?`; ans = String(a + b);
-          } else if (type === 1) {
-            const a = rand(30, 99), b = rand(11, a - 5);
-            text = `${a} - ${b} = ?`; ans = String(a - b);
-          } else if (type === 2) {
-            const a = rand(2, 12), b = rand(2, 12);
-            text = `${a} × ${b} = ?`; ans = String(a * b);
-          } else {
-            const b = rand(2, 9), q = rand(2, 12);
-            text = `${b * q} ÷ ${b} = ?`; ans = String(q);
-          }
-        }
-        else if (grade === 'ป.4-ป.5') {
-          const type = rand(0, 2);
-          if (type === 0) { // PEMDAS
-            const a = rand(2, 15), b = rand(2, 9), c = rand(2, 9);
-            text = `${a} + ${b} × ${c} = ?`; ans = String(a + b * c);
-          } else if (type === 1) { // ทศนิยม 1 ตำแหน่ง
-            const a = rand(11, 95), b = rand(5, 50);
-            if (rand(0, 1) === 0) {
-              text = `${(a / 10).toFixed(1)} + ${(b / 10).toFixed(1)} = ?`;
-              ans = String(Number(((a + b) / 10).toFixed(1)));
-            } else {
-              const big = Math.max(a, b), small = Math.min(a, b);
-              text = `${(big / 10).toFixed(1)} - ${(small / 10).toFixed(1)} = ?`;
-              ans = String(Number(((big - small) / 10).toFixed(1)));
-            }
-          } else { // เศษส่วนส่วนเท่ากัน (ตอบเป็นเศษส่วนอย่างต่ำหรือจำนวนเต็ม)
-            const d = [2, 3, 4, 5, 6, 8, 10][rand(0, 6)];
-            const n1 = rand(1, d - 1), n2 = rand(1, d - 1);
-            const sum = n1 + n2;
-            const g = gcd(sum, d);
-            hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ (เช่น 3/4)';
-            text = `${n1}/${d} + ${n2}/${d} = ?`;
-            ans = (d / g === 1) ? String(sum / g) : `${sum / g}/${d / g}`;
-          }
-        }
-        else if (grade === 'ป.6') {
-          const type = rand(0, 2);
-          if (type === 0) { // จำนวนเต็ม (รวมติดลบ)
-            const a = rand(-15, 15), b = rand(2, 12);
-            const bStr = b;
-            text = `${a} - ${bStr} = ?`; ans = String(a - b);
-          } else if (type === 1) { // คูณทศนิยม
-            const a = rand(2, 15), b = rand(2, 9);
-            text = `${(a / 10).toFixed(1)} × ${b} = ?`;
-            ans = String(Number(((a * b) / 10).toFixed(1)));
-          } else { // คูณเศษส่วน (ตัดทอนได้ลงตัวหรืออย่างต่ำ)
-            const d1 = rand(2, 6), d2 = rand(2, 6);
-            const n1 = rand(1, 5), n2 = rand(1, 5);
-            const num = n1 * n2, den = d1 * d2;
-            const g = gcd(num, den);
-            hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ';
-            text = `${n1}/${d1} × ${n2}/${d2} = ?`;
-            ans = (den / g === 1) ? String(num / g) : `${num / g}/${den / g}`;
-          }
-        }
-        else if (grade === 'ม.1-ม.3') {
-          const type = rand(0, 2);
-          if (type === 0) { // หาสัมประสิทธิ์ของ x จากการบวกลบพหุนาม
-            const a = rand(-9, 9) || 2, b = rand(-9, 9) || 3;
-            hint = 'หาสัมประสิทธิ์ของ x';
-            text = `(${a}x + 4) + (${b}x - 2)`;
-            ans = String(a + b);
-          } else if (type === 1) { // แยกตัวประกอบหาค่า a
-            const r1 = rand(1, 7), r2 = rand(1, 7);
-            const sum = r1 + r2, prod = r1 * r2;
-            hint = 'จงหาค่า a';
-            text = `x² + ${sum}x + ${prod} = (x + ${r1})(x + a)`;
-            ans = String(r2);
-          } else { // หาพจน์ค่าคงตัวจากการกระจาย
-            const a = rand(-6, 6) || 2, b = rand(-6, 6) || -3;
-            const aStr = a > 0 ? `+ ${a}` : `- ${Math.abs(a)}`;
-            const bStr = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
-            hint = 'หาพจน์ค่าคงตัวจากการคูณ';
-            text = `(x ${aStr})(x ${bStr})`;
-            ans = String(a * b);
-          }
-        }
-
-        list.push({ hint, text, ans });
-      }
-      return list;
-    }
-
-    function showScreen(id) {
-      ['screen-start', 'screen-drill', 'screen-set-done', 'screen-final'].forEach(s => {
-        document.getElementById(s).classList.add('hidden');
-      });
-      document.getElementById(id).classList.remove('hidden');
-    }
-
-    function sendRecord(setNo, score, total, timeUsed, statusElId) {
-      const statusEl = document.getElementById(statusElId);
-      statusEl.textContent = '⏳ กำลังบันทึกคะแนน...';
-      statusEl.style.color = '#64748b';
-
-      const payload = {
-        name: studentName,
-        grade: studentGrade,
-        setNo: `ชุดที่ ${setNo}/${TOTAL_SETS}`,
-        score: score,
-        total: total,
-        timeUsed: timeUsed
-      };
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      })
-      .then(() => {
-        statusEl.textContent = '✅ บันทึกคะแนนเข้าระบบเรียบร้อย';
-        statusEl.style.color = '#16a34a';
-      })
-      .catch(() => {
-        statusEl.textContent = '⚠️ บันทึกไม่สำเร็จ (โปรดเช็กอินเทอร์เน็ต)';
-        statusEl.style.color = '#dc2626';
-      });
-    }
-
-    function startSession() {
-      const nameInput = document.getElementById('nickname').value.trim();
-      studentName = nameInput || 'นักเรียน';
-      studentGrade = document.getElementById('grade').value;
-      localStorage.setItem('kt_name', studentName);
-      localStorage.setItem('kt_grade', studentGrade);
-      setupExtraKeys(studentGrade);
-      currentSet = 1;
-      totalScore = 0;
-      totalTimeUsed = 0;
-      startSet();
-    }
-
-    function startSet() {
-      questions = generateQuestions(studentGrade);
-      currentQ = 0;
-      setScore = 0;
-      currentInput = '';
-      timeLeft = TIME_LIMIT;
-      showScreen('screen-drill');
-      updateUI();
-      clearInterval(timerId);
-      timerId = setInterval(() => {
-        timeLeft--;
-        document.getElementById('timer-text').textContent = `${timeLeft} วิ`;
-        document.getElementById('timer-bar').style.width = `${(timeLeft / TIME_LIMIT) * 100}%`;
-        if (timeLeft <= 0) finishSet();
-      }, 1000);
-    }
-
-    function updateUI() {
-      document.getElementById('set-label').textContent = `${studentGrade} • ชุด ${currentSet}/${TOTAL_SETS}`;
-      document.getElementById('q-label').textContent = `ข้อ ${currentQ + 1}/${QUESTIONS_PER_SET}`;
-      document.getElementById('timer-text').textContent = `${timeLeft} วิ`;
-      document.getElementById('timer-bar').style.width = `${(timeLeft / TIME_LIMIT) * 100}%`;
-      document.getElementById('question-hint').textContent = questions[currentQ].hint;
-      document.getElementById('question-text').textContent = questions[currentQ].text;
-      document.getElementById('answer-display').textContent = currentInput;
-    }
-
-    function pressKey(ch) {
-      if (currentInput.length >= 8) return;
-      if (ch === '-' && currentInput.length > 0) return;
-      if (ch === '.' && currentInput.includes('.')) return;
-      if (ch === '/' && currentInput.includes('/')) return;
-      currentInput += ch;
-      document.getElementById('answer-display').textContent = currentInput;
-    }
-
-    function delKey() {
-      currentInput = currentInput.slice(0, -1);
-      document.getElementById('answer-display').textContent = currentInput;
-    }
-
-    function checkAnswer(userStr, correctStr) {
-      if (userStr === correctStr) return true;
-      // รองรับกรณีตอบทศนิยม เช่น 2.0 กับ 2
-      if (!userStr.includes('/') && !correctStr.includes('/')) {
-        const u = parseFloat(userStr), c = parseFloat(correctStr);
-        if (!isNaN(u) && !isNaN(c) && Math.abs(u - c) < 1e-9) return true;
-      }
-      return false;
-    }
-
-    function submitAnswer() {
-      if (currentInput === '' || currentInput === '-') return;
-      if (checkAnswer(currentInput, questions[currentQ].ans)) setScore++;
-      currentInput = '';
-      currentQ++;
-      if (currentQ >= QUESTIONS_PER_SET) {
-        finishSet();
-      } else {
-        updateUI();
-      }
-    }
-
-    function finishSet() {
-      clearInterval(timerId);
-      const used = TIME_LIMIT - timeLeft;
-      totalScore += setScore;
-      totalTimeUsed += used;
-
-      if (currentSet < TOTAL_SETS) {
-        document.getElementById('set-done-title').textContent = `จบชุดที่ ${currentSet} / ${TOTAL_SETS}`;
-        document.getElementById('set-score').textContent = `${setScore} / ${QUESTIONS_PER_SET}`;
-        document.getElementById('set-stat').innerHTML = `
-          👤 น้อง: <b>${studentName}</b> (${studentGrade})<br>
-          ⏱️ ใช้เวลาไป: <b>${used} วินาที</b>
-        `;
-        document.getElementById('next-set-btn').textContent = `ลุยชุดที่ ${currentSet + 1} / ${TOTAL_SETS} ต่อเลย!`;
-        showScreen('screen-set-done');
-        sendRecord(currentSet, setScore, QUESTIONS_PER_SET, used, 'set-save-status');
-      } else {
-        document.getElementById('final-score').textContent = `${totalScore} / ${TOTAL_SETS * QUESTIONS_PER_SET}`;
-        document.getElementById('final-stat').innerHTML = `
-          👤 น้อง: <b>${studentName}</b> (${studentGrade})<br>
-          ⏱️ เวลารวม 5 ชุด: <b>${totalTimeUsed} วินาที</b><br>
-          🎯 ความแม่นยำ: <b>${Math.round((totalScore / (TOTAL_SETS * QUESTIONS_PER_SET)) * 100)}%</b>
-        `;
-        showScreen('screen-final');
-        sendRecord(currentSet, setScore, QUESTIONS_PER_SET, used, 'final-save-status');
-      }
-    }
-
-    function nextSet() {
-      currentSet++;
-      startSet();
-    }
-  </script>
-</body>
-</html>
+      <button class="btn btn-primary" onclick="
