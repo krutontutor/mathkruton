@@ -163,3 +163,530 @@
     let currentInput = '';
     let setScore = 0;
     let totalScore = 0;
+    let totalTimeUsed = 0;
+    let timeLeft = 60;
+    let timerId = null;
+
+    if (studentName) document.getElementById('nickname').value = studentName;
+    const gradeEl = document.getElementById('grade');
+    const levelEl = document.getElementById('level');
+    if ([...gradeEl.options].some(o => o.value === studentGrade)) gradeEl.value = studentGrade;
+    if ([...levelEl.options].some(o => o.value === studentLevel)) levelEl.value = studentLevel;
+    toggleLevel();
+
+    function toggleLevel() {
+      const g = document.getElementById('grade').value;
+      const levelGroup = document.getElementById('level-group');
+      if (g === 'ป.1') levelGroup.classList.add('hidden');
+      else levelGroup.classList.remove('hidden');
+    }
+
+    function getGradeLabel() {
+      return studentLevel ? `${studentGrade} (${studentLevel})` : studentGrade;
+    }
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function pick(arr) {
+      return arr[rand(0, arr.length - 1)];
+    }
+
+    function gcd(a, b) {
+      a = Math.abs(a); b = Math.abs(b);
+      while (b) { let t = b; b = a % b; a = t; }
+      return a;
+    }
+
+    function formatFrac(num, den) {
+      if (num === 0) return '0';
+      const g = gcd(num, den);
+      const n = num / g, d = den / g;
+      return d === 1 ? String(n) : `${n}/${d}`;
+    }
+
+    function setupExtraKeys(grade) {
+      const box = document.getElementById('extra-keys');
+      const kMinus = document.getElementById('key-minus');
+      const kDot = document.getElementById('key-dot');
+      const kSlash = document.getElementById('key-slash');
+      [box, kMinus, kDot, kSlash].forEach(el => el.classList.add('hidden'));
+
+      if (grade === 'ป.4-ป.5') {
+        box.classList.remove('hidden');
+        kDot.classList.remove('hidden');
+        kSlash.classList.remove('hidden');
+      } else if (grade === 'ป.6') {
+        box.classList.remove('hidden');
+        kMinus.classList.remove('hidden');
+        kDot.classList.remove('hidden');
+        kSlash.classList.remove('hidden');
+      } else if (grade === 'ม.1-ม.3') {
+        box.classList.remove('hidden');
+        kMinus.classList.remove('hidden');
+      }
+    }
+
+    function generateP6WordProblem(lv) {
+      let text = '', ans = '', hint = 'ตอบเฉพาะตัวเลข (ไม่ต้องใส่หน่วย)';
+
+      if (lv === 1) {
+        const type = rand(0, 3);
+        if (type === 0) {
+          const price = pick([200, 300, 400, 500, 600, 800, 1000, 1200]);
+          const disc = pick([10, 20, 25, 50]);
+          text = `เสื้อราคา ${price} บาท ร้านค้าลดราคาให้ ${disc}% ผู้ซื้อต้องจ่ายเงินกี่บาท`;
+          ans = String(price - (price * disc) / 100);
+        } else if (type === 1) {
+          const a = rand(2, 5), b = rand(2, 6), k = rand(3, 9);
+          text = `อัตราส่วนของจำนวนปากกาต่อดินสอคือ ${a} : ${b} ถ้ามีปากกา ${a * k} ด้าม จะมีดินสอกี่แท่ง`;
+          ans = String(b * k);
+        } else if (type === 2) {
+          const v = pick([40, 50, 60, 70, 80, 90]), t = rand(2, 5);
+          text = `รถยนต์แล่นด้วยอัตราเร็วเฉลี่ย ${v} กิโลเมตรต่อชั่วโมง เป็นเวลา ${t} ชั่วโมง จะได้ระยะทางกี่กิโลเมตร`;
+          ans = String(v * t);
+        } else {
+          const y = rand(7, 14), diff = rand(3, 8);
+          text = `พี่อายุมากกว่าน้อง ${diff} ปี ถ้าน้องอายุ ${y} ปี ทั้งสองคนจะมีอายุรวมกันกี่ปี`;
+          ans = String(y + (y + diff));
+        }
+      } else if (lv === 2) {
+        const type = rand(0, 3);
+        if (type === 0) {
+          const cost = pick([200, 300, 400, 500, 600, 800, 1000]);
+          const profit = pick([10, 20, 25, 30, 40, 50]);
+          text = `ร้านค้าซื้อกระเป๋ามาราคา ${cost} บาท ต้องการขายให้ได้กำไร ${profit}% ต้องตั้งราคาขายกี่บาท`;
+          ans = String(cost + (cost * profit) / 100);
+        } else if (type === 1) {
+          const x = rand(15, 45), y = rand(5, x - 4);
+          const askMax = rand(0, 1) === 0;
+          text = `จำนวนสองจำนวนรวมกันได้ ${x + y} และมีผลต่างเท่ากับ ${x - y} จำนวนที่${askMax ? 'มากกว่า' : 'น้อยกว่า'}คือเท่าใด`;
+          ans = String(askMax ? x : y);
+        } else if (type === 2) {
+          const avg = rand(70, 90);
+          const x1 = avg + rand(-10, 10), x2 = avg + rand(-10, 10);
+          text = `นักเรียนสอบคณิตศาสตร์ 3 ครั้ง ได้คะแนนเฉลี่ย ${avg} คะแนน ถ้าสองครั้งแรกได้ ${x1} และ ${x2} คะแนน ครั้งที่สามได้กี่คะแนน`;
+          ans = String(avg * 3 - x1 - x2);
+        } else {
+          const [w1, d1, w2] = pick([[4, 6, 3], [6, 4, 8], [3, 8, 4], [5, 6, 3], [4, 9, 6], [6, 5, 10]]);
+          text = `คนงาน ${w1} คน ช่วยกันทาสีบ้านเสร็จภายใน ${d1} วัน ถ้าใช้คนงาน ${w2} คน จะทาสีบ้านเสร็จภายในกี่วัน`;
+          ans = String((w1 * d1) / w2);
+        }
+      } else {
+        const type = rand(0, 3);
+        if (type === 0) {
+          const s = pick([{ p: 20, mult: 120 }, { p: 25, mult: 125 }, { p: 50, mult: 150 }, { p: 10, mult: 110 }]);
+          const k = rand(2, 6);
+          text = `ขายสินค้าไปราคา ${s.mult * k} บาท ได้กำไร ${s.p}% เดิมซื้อสินค้านี้มาราคากี่บาท`;
+          ans = String(100 * k);
+        } else if (type === 1) {
+          const mid = rand(12, 40), askMax = rand(0, 1) === 0;
+          text = `จำนวนเต็มเรียงติดกัน 3 จำนวน มีผลรวมเท่ากับ ${mid * 3} จำนวนที่${askMax ? 'มากที่สุด' : 'น้อยที่สุด'}คือเท่าใด`;
+          ans = String(askMax ? mid + 1 : mid - 1);
+        } else if (type === 2) {
+          const [a, b] = pick([[2, 3], [2, 5], [3, 4], [3, 5], [4, 5]]);
+          const unit = pick([20, 50, 100]);
+          text = `แบ่งเงิน ${(a + b) * unit} บาท ให้สมชายและสมหญิงในอัตราส่วน ${a} : ${b} สมหญิงได้รับเงินกี่บาท`;
+          ans = String(b * unit);
+        } else {
+          const d = pick([3, 4, 5, 6, 7, 8]), n = rand(1, d - 1), k = rand(3, 12);
+          text = `เชือกเส้นหนึ่งตัดไปใช้ ${n}/${d} ของความยาวทั้งหมด ยังเหลือเชือกยาว ${(d - n) * k} เมตร เดิมเชือกเส้นนี้ยาวกี่เมตร`;
+          ans = String(d * k);
+        }
+      }
+      return { hint, text, ans, isWord: true };
+    }
+
+    function generateQuestions(grade, levelStr) {
+      const lv = parseInt((levelStr || '').replace('Lv.', ''), 10) || 1;
+      const list = [];
+
+      for (let i = 0; i < questionsPerSet; i++) {
+        if (grade === 'ป.6 โจทย์ปัญหา') {
+          list.push(generateP6WordProblem(lv));
+          continue;
+        }
+
+        let hint = '', text = '', ans = '';
+
+        if (grade === 'ป.1') {
+          if (rand(0, 1) === 0) {
+            const a = rand(1, 15), b = rand(1, 15);
+            text = `${a} + ${b} = ?`; ans = String(a + b);
+          } else {
+            const a = rand(5, 20), b = rand(1, a);
+            text = `${a} - ${b} = ?`; ans = String(a - b);
+          }
+        }
+        else if (grade === 'ป.2-ป.3') {
+          if (lv === 1) {
+            const type = rand(0, 2);
+            if (type === 0) {
+              const a = rand(10, 45), b = rand(10, 45);
+              text = `${a} + ${b} = ?`; ans = String(a + b);
+            } else if (type === 1) {
+              const a = rand(25, 60), b = rand(10, a - 5);
+              text = `${a} - ${b} = ?`; ans = String(a - b);
+            } else {
+              const a = rand(2, 9), b = rand(2, 9);
+              text = `${a} × ${b} = ?`; ans = String(a * b);
+            }
+          } else if (lv === 2) {
+            const type = rand(0, 3);
+            if (type === 0) {
+              const a = rand(45, 180), b = rand(35, 150);
+              text = `${a} + ${b} = ?`; ans = String(a + b);
+            } else if (type === 1) {
+              const a = rand(80, 200), b = rand(25, a - 15);
+              text = `${a} - ${b} = ?`; ans = String(a - b);
+            } else if (type === 2) {
+              const a = rand(6, 12), b = rand(4, 12);
+              text = `${a} × ${b} = ?`; ans = String(a * b);
+            } else {
+              const b = rand(3, 9), q = rand(4, 12);
+              text = `${b * q} ÷ ${b} = ?`; ans = String(q);
+            }
+          } else {
+            const type = rand(0, 2);
+            if (type === 0) {
+              const a = rand(12, 29), b = rand(3, 9);
+              text = `${a} × ${b} = ?`; ans = String(a * b);
+            } else if (type === 1) {
+              const a = rand(4, 12), b = rand(4, 9), c = rand(5, a * b - 5);
+              text = `${a} × ${b} - ${c} = ?`; ans = String(a * b - c);
+            } else {
+              const d = rand(3, 9), q = rand(4, 12), a = rand(5, d * q - 5);
+              text = `(${a} + ${d * q - a}) ÷ ${d} = ?`; ans = String(q);
+            }
+          }
+        }
+        else if (grade === 'ป.4-ป.5') {
+          const type = rand(0, 2);
+          if (lv === 1) {
+            if (type === 0) {
+              const a = rand(3, 20), b = rand(2, 9), c = rand(2, 9);
+              text = `${a} + ${b} × ${c} = ?`; ans = String(a + b * c);
+            } else if (type === 1) {
+              const a = rand(11, 65), b = rand(5, 45);
+              text = `${(a / 10).toFixed(1)} + ${(b / 10).toFixed(1)} = ?`;
+              ans = String(Number(((a + b) / 10).toFixed(1)));
+            } else {
+              const d = pick([3, 4, 5, 6, 8, 10]);
+              const n1 = rand(1, d - 1), n2 = rand(1, d - 1);
+              hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ';
+              text = `${n1}/${d} + ${n2}/${d} = ?`;
+              ans = formatFrac(n1 + n2, d);
+            }
+          } else if (lv === 2) {
+            if (type === 0) {
+              const c = rand(3, 9), q = rand(4, 15), b = rand(4, c * q - 4);
+              text = `(${c * q - b} + ${b}) ÷ ${c} = ?`; ans = String(q);
+            } else if (type === 1) {
+              const a = rand(12, 45), b = rand(2, 8);
+              text = `${(a / 10).toFixed(1)} × ${b} = ?`;
+              ans = String(Number(((a * b) / 10).toFixed(1)));
+            } else {
+              const [d1, d2] = pick([[2, 4], [2, 6], [2, 8], [3, 6], [3, 9], [4, 8], [5, 10]]);
+              const n1 = rand(1, d1 - 1), n2 = rand(1, d2 - 1);
+              const mult = d2 / d1;
+              hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ';
+              text = `${n1}/${d1} + ${n2}/${d2} = ?`;
+              ans = formatFrac(n1 * mult + n2, d2);
+            }
+          } else {
+            if (type === 0) {
+              const a = rand(3, 9), x = rand(3, 12), b = rand(4, 25);
+              hint = 'จงหาค่าของ □';
+              text = `${a} × □ + ${b} = ${a * x + b}`;
+              ans = String(x);
+            } else if (type === 1) {
+              const a = rand(2, 9), b = rand(2, 9);
+              text = `${(a / 10).toFixed(1)} × ${(b / 10).toFixed(1)} = ?`;
+              ans = String(Number(((a * b) / 100).toFixed(2)));
+            } else {
+              const [d1, d2] = pick([[2, 3], [2, 5], [3, 4], [3, 5], [4, 5], [4, 6]]);
+              const n1 = rand(1, d1 - 1), n2 = rand(1, d2 - 1);
+              hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ';
+              text = `${n1}/${d1} + ${n2}/${d2} = ?`;
+              ans = formatFrac(n1 * d2 + n2 * d1, d1 * d2);
+            }
+          }
+        }
+        else if (grade === 'ป.6') {
+          const type = rand(0, 2);
+          if (lv === 1) {
+            if (type === 0) {
+              const a = rand(-12, 12), b = rand(3, 15);
+              text = `${a} - ${b} = ?`; ans = String(a - b);
+            } else if (type === 1) {
+              const a = rand(11, 35), b = rand(2, 9);
+              text = `${(a / 10).toFixed(1)} × ${b} = ?`;
+              ans = String(Number(((a * b) / 10).toFixed(1)));
+            } else {
+              const d1 = rand(2, 6), d2 = rand(2, 6), n1 = rand(1, 5), n2 = rand(1, 5);
+              hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ';
+              text = `${n1}/${d1} × ${n2}/${d2} = ?`;
+              ans = formatFrac(n1 * n2, d1 * d2);
+            }
+          } else if (lv === 2) {
+            if (type === 0) {
+              const a = rand(-12, -2), b = rand(-9, 9) || 3;
+              const bStr = b < 0 ? `(${b})` : b;
+              text = `${a} - ${bStr} = ?`; ans = String(a - b);
+            } else if (type === 1) {
+              const b = rand(2, 9), q = rand(3, 15);
+              text = `${((b * q) / 10).toFixed(1)} ÷ ${(b / 10).toFixed(1)} = ?`;
+              ans = String(q);
+            } else {
+              const [d1, d2] = pick([[2, 3], [3, 4], [2, 5], [3, 5], [4, 6]]);
+              const n1 = rand(1, d1 - 1), n2 = rand(1, d2 - 1);
+              hint = 'ตอบเป็นจำนวนเต็ม หรือเศษส่วนอย่างต่ำ';
+              text = `${n1}/${d1} - ${n2}/${d2} = ?`;
+              const num = n1 * d2 - n2 * d1;
+              ans = num < 0 ? '-' + formatFrac(Math.abs(num), d1 * d2) : formatFrac(num, d1 * d2);
+            }
+          } else {
+            if (type === 0) {
+              const a = rand(-8, -2), b = rand(2, 9), c = rand(-15, 15) || 5;
+              const cStr = c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+              text = `${a} × ${b} ${cStr} = ?`;
+              ans = String(a * b + c);
+            } else if (type === 1) {
+              const p = pick([5, 10, 15, 20, 25, 30, 40, 60, 75]);
+              const base = pick([40, 60, 80, 120, 200, 300, 400]);
+              if ((p * base) % 100 !== 0) {
+                text = `15% ของ 200 = ?`; ans = '30';
+              } else {
+                text = `${p}% ของ ${base} = ?`; ans = String((p * base) / 100);
+              }
+            } else {
+              const a = rand(2, 7), x = rand(-6, 9) || 4, b = rand(3, 15);
+              hint = 'แก้สมการหาค่า x';
+              text = `${a}x - ${b} = ${a * x - b}`;
+              ans = String(x);
+            }
+          }
+        }
+        else if (grade === 'ม.1-ม.3') {
+          const type = rand(0, 1);
+          if (lv === 1) {
+            if (type === 0) {
+              const a = rand(-9, 9) || 2, b = rand(-9, 9) || 3;
+              hint = 'หาสัมประสิทธิ์ของ x';
+              text = `(${a}x + 4) + (${b}x - 2)`;
+              ans = String(a + b);
+            } else {
+              const a = rand(-7, 7) || 2, b = rand(-7, 7) || -3;
+              const aStr = a > 0 ? `+ ${a}` : `- ${Math.abs(a)}`;
+              const bStr = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+              hint = 'หาพจน์ค่าคงตัวจากการคูณ';
+              text = `(x ${aStr})(x ${bStr})`;
+              ans = String(a * b);
+            }
+          } else if (lv === 2) {
+            if (type === 0) {
+              const r1 = rand(-8, 8) || 3, r2 = rand(-8, 8) || -2;
+              const sum = r1 + r2, prod = r1 * r2;
+              const sumStr = sum >= 0 ? `+ ${sum}x` : `- ${Math.abs(sum)}x`;
+              const prodStr = prod >= 0 ? `+ ${prod}` : `- ${Math.abs(prod)}`;
+              const r1Str = r1 >= 0 ? `+ ${r1}` : `- ${Math.abs(r1)}`;
+              hint = 'จงหาค่า a';
+              text = `x² ${sumStr} ${prodStr} = (x ${r1Str})(x + a)`;
+              ans = String(r2);
+            } else {
+              const a = rand(-9, 9) || 4, b = rand(-9, 9) || -5;
+              const aStr = a > 0 ? `+ ${a}` : `- ${Math.abs(a)}`;
+              const bStr = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+              hint = 'หาสัมประสิทธิ์ของ x';
+              text = `(x ${aStr})(x ${bStr})`;
+              ans = String(a + b);
+            }
+          } else {
+            if (type === 0) {
+              const a = rand(2, 5), c = rand(2, 5);
+              const b = rand(-6, 6) || 3, d = rand(-6, 6) || -2;
+              const bStr = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+              const dStr = d > 0 ? `+ ${d}` : `- ${Math.abs(d)}`;
+              hint = 'หาสัมประสิทธิ์ของ x';
+              text = `(${a}x ${bStr})(${c}x ${dStr})`;
+              ans = String(a * d + b * c);
+            } else {
+              const a = rand(2, 6), b = rand(-7, 7) || -3;
+              const bStr = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+              hint = 'หาสัมประสิทธิ์ของ x จากการกระจาย';
+              text = `(${a}x ${bStr})²`;
+              ans = String(2 * a * b);
+            }
+          }
+        }
+
+        list.push({ hint, text, ans, isWord: false });
+      }
+      return list;
+    }
+
+    function showScreen(id) {
+      ['screen-start', 'screen-drill', 'screen-set-done', 'screen-final'].forEach(s => {
+        document.getElementById(s).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function sendRecord(setNo, score, total, timeUsed, statusElId) {
+      const statusEl = document.getElementById(statusElId);
+      statusEl.textContent = '⏳ กำลังบันทึกคะแนน...';
+      statusEl.style.color = '#64748b';
+
+      const payload = {
+        name: studentName,
+        grade: getGradeLabel(),
+        setNo: `ชุดที่ ${setNo}/${TOTAL_SETS}`,
+        score: score,
+        total: total,
+        timeUsed: timeUsed
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        statusEl.textContent = '✅ บันทึกคะแนนเข้าระบบเรียบร้อย';
+        statusEl.style.color = '#16a34a';
+      })
+      .catch(() => {
+        statusEl.textContent = '⚠️ บันทึกไม่สำเร็จ (โปรดเช็กอินเทอร์เน็ต)';
+        statusEl.style.color = '#dc2626';
+      });
+    }
+
+    function startSession() {
+      const nameInput = document.getElementById('nickname').value.trim();
+      studentName = nameInput || 'นักเรียน';
+      studentGrade = document.getElementById('grade').value;
+      studentLevel = (studentGrade === 'ป.1') ? '' : document.getElementById('level').value;
+
+      try {
+        localStorage.setItem('kt_name', studentName);
+        localStorage.setItem('kt_grade', studentGrade);
+        if (studentLevel) localStorage.setItem('kt_level', studentLevel);
+      } catch (e) {}
+
+      if (studentGrade === 'ป.6 โจทย์ปัญหา') {
+        questionsPerSet = 5;
+        timeLimit = 120;
+      } else {
+        questionsPerSet = 15;
+        timeLimit = 60;
+      }
+
+      setupExtraKeys(studentGrade);
+      currentSet = 1;
+      totalScore = 0;
+      totalTimeUsed = 0;
+      startSet();
+    }
+
+    function startSet() {
+      questions = generateQuestions(studentGrade, studentLevel);
+      currentQ = 0;
+      setScore = 0;
+      currentInput = '';
+      timeLeft = timeLimit;
+      showScreen('screen-drill');
+      updateUI();
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer-text').textContent = `${timeLeft} วิ`;
+        document.getElementById('timer-bar').style.width = `${(timeLeft / timeLimit) * 100}%`;
+        if (timeLeft <= 0) finishSet();
+      }, 1000);
+    }
+
+    function updateUI() {
+      const q = questions[currentQ];
+      document.getElementById('set-label').textContent = `${getGradeLabel()} • ชุด ${currentSet}/${TOTAL_SETS}`;
+      document.getElementById('q-label').textContent = `ข้อ ${currentQ + 1}/${questionsPerSet}`;
+      document.getElementById('timer-text').textContent = `${timeLeft} วิ`;
+      document.getElementById('timer-bar').style.width = `${(timeLeft / timeLimit) * 100}%`;
+      document.getElementById('question-hint').textContent = q.hint;
+
+      const qTextEl = document.getElementById('question-text');
+      qTextEl.textContent = q.text;
+      if (q.isWord) qTextEl.classList.add('word-problem');
+      else qTextEl.classList.remove('word-problem');
+      document.getElementById('answer-display').textContent = currentInput;
+    }
+
+    function pressKey(ch) {
+      if (currentInput.length >= 8) return;
+      if (ch === '-' && currentInput.length > 0) return;
+      if (ch === '.' && currentInput.includes('.')) return;
+      if (ch === '/' && currentInput.includes('/')) return;
+      currentInput += ch;
+      document.getElementById('answer-display').textContent = currentInput;
+    }
+
+    function delKey() {
+      currentInput = currentInput.slice(0, -1);
+      document.getElementById('answer-display').textContent = currentInput;
+    }
+
+    function checkAnswer(userStr, correctStr) {
+      if (userStr === correctStr) return true;
+      if (!userStr.includes('/') && !correctStr.includes('/')) {
+        const u = parseFloat(userStr), c = parseFloat(correctStr);
+        if (!isNaN(u) && !isNaN(c) && Math.abs(u - c) < 1e-9) return true;
+      }
+      return false;
+    }
+
+    function submitAnswer() {
+      if (currentInput === '' || currentInput === '-') return;
+      if (checkAnswer(currentInput, questions[currentQ].ans)) setScore++;
+      currentInput = '';
+      currentQ++;
+      if (currentQ >= questionsPerSet) finishSet();
+      else updateUI();
+    }
+
+    function finishSet() {
+      clearInterval(timerId);
+      const used = timeLimit - timeLeft;
+      totalScore += setScore;
+      totalTimeUsed += used;
+
+      if (currentSet < TOTAL_SETS) {
+        document.getElementById('set-done-title').textContent = `จบชุดที่ ${currentSet} / ${TOTAL_SETS}`;
+        document.getElementById('set-score').textContent = `${setScore} / ${questionsPerSet}`;
+        document.getElementById('set-stat').innerHTML = `
+          👤 น้อง: <b>${studentName}</b> (${getGradeLabel()})<br>
+          ⏱️ ใช้เวลาไป: <b>${used} วินาที</b>
+        `;
+        document.getElementById('next-set-btn').textContent = `ลุยชุดที่ ${currentSet + 1} / ${TOTAL_SETS} ต่อเลย!`;
+        showScreen('screen-set-done');
+        sendRecord(currentSet, setScore, questionsPerSet, used, 'set-save-status');
+      } else {
+        const maxTotal = TOTAL_SETS * questionsPerSet;
+        document.getElementById('final-score').textContent = `${totalScore} / ${maxTotal}`;
+        document.getElementById('final-stat').innerHTML = `
+          👤 น้อง: <b>${studentName}</b> (${getGradeLabel()})<br>
+          ⏱️ เวลารวม 5 ชุด: <b>${totalTimeUsed} วินาที</b><br>
+          🎯 ความแม่นยำ: <b>${Math.round((totalScore / maxTotal) * 100)}%</b>
+        `;
+        showScreen('screen-final');
+        sendRecord(currentSet, setScore, questionsPerSet, used, 'final-save-status');
+      }
+    }
+
+    function nextSet() {
+      currentSet++;
+      startSet();
+    }
+  </script>
+</body>
+</html>
