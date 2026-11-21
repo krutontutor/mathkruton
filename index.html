@@ -145,9 +145,17 @@
     let questionsPerSet = 15;
     let timeLimit = 60;
 
-    let studentName = localStorage.getItem('kt_name') || '';
-    let studentGrade = localStorage.getItem('kt_grade') || 'ป.4-ป.5';
-    let studentLevel = localStorage.getItem('kt_level') || 'Lv.1';
+    let studentName = '';
+    let studentGrade = 'ป.4-ป.5';
+    let studentLevel = 'Lv.1';
+
+    try {
+      studentName = localStorage.getItem('kt_name') || '';
+      const savedGrade = localStorage.getItem('kt_grade');
+      const savedLevel = localStorage.getItem('kt_level');
+      if (savedGrade) studentGrade = savedGrade;
+      if (savedLevel) studentLevel = savedLevel;
+    } catch (e) {}
 
     let currentSet = 1;
     let currentQ = 0;
@@ -155,124 +163,3 @@
     let currentInput = '';
     let setScore = 0;
     let totalScore = 0;
-    let totalTimeUsed = 0;
-    let timeLeft = 60;
-    let timerId = null;
-
-    if (studentName) document.getElementById('nickname').value = studentName;
-    if (studentGrade) document.getElementById('grade').value = studentGrade;
-    if (studentLevel) document.getElementById('level').value = studentLevel;
-    toggleLevel();
-
-    function toggleLevel() {
-      const g = document.getElementById('grade').value;
-      const levelGroup = document.getElementById('level-group');
-      if (g === 'ป.1') levelGroup.classList.add('hidden');
-      else levelGroup.classList.remove('hidden');
-    }
-
-    function getGradeLabel() {
-      return studentLevel ? `${studentGrade} (${studentLevel})` : studentGrade;
-    }
-
-    function rand(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function pick(arr) {
-      return arr[rand(0, arr.length - 1)];
-    }
-
-    function gcd(a, b) {
-      a = Math.abs(a); b = Math.abs(b);
-      while (b) { let t = b; b = a % b; a = t; }
-      return a;
-    }
-
-    function formatFrac(num, den) {
-      if (num === 0) return '0';
-      const g = gcd(num, den);
-      const n = num / g, d = den / g;
-      return d === 1 ? String(n) : `${n}/${d}`;
-    }
-
-    function setupExtraKeys(grade) {
-      const box = document.getElementById('extra-keys');
-      const kMinus = document.getElementById('key-minus');
-      const kDot = document.getElementById('key-dot');
-      const kSlash = document.getElementById('key-slash');
-      [box, kMinus, kDot, kSlash].forEach(el => el.classList.add('hidden'));
-
-      if (grade === 'ป.4-ป.5') {
-        box.classList.remove('hidden');
-        kDot.classList.remove('hidden');
-        kSlash.classList.remove('hidden');
-      } else if (grade === 'ป.6') {
-        box.classList.remove('hidden');
-        kMinus.classList.remove('hidden');
-        kDot.classList.remove('hidden');
-        kSlash.classList.remove('hidden');
-      } else if (grade === 'ม.1-ม.3') {
-        box.classList.remove('hidden');
-        kMinus.classList.remove('hidden');
-      }
-    }
-
-    function generateP6WordProblem(lv) {
-      let text = '', ans = '', hint = 'ตอบเฉพาะตัวเลข (ไม่ต้องใส่หน่วย)';
-
-      if (lv === 1) {
-        const type = rand(0, 3);
-        if (type === 0) {
-          const price = pick([200, 300, 400, 500, 600, 800, 1000, 1200]);
-          const disc = pick([10, 20, 25, 50]);
-          text = `เสื้อราคา ${price} บาท ร้านค้าลดราคาให้ ${disc}% ผู้ซื้อต้องจ่ายเงินกี่บาท`;
-          ans = String(price - (price * disc) / 100);
-        } else if (type === 1) {
-          const a = rand(2, 5), b = rand(2, 6), k = rand(3, 9);
-          text = `อัตราส่วนของจำนวนปากกาต่อดินสอคือ ${a} : ${b} ถ้ามีปากกา ${a * k} ด้าม จะมีดินสอกี่แท่ง`;
-          ans = String(b * k);
-        } else if (type === 2) {
-          const v = pick([40, 50, 60, 70, 80, 90]), t = rand(2, 5);
-          text = `รถยนต์แล่นด้วยอัตราเร็วเฉลี่ย ${v} กิโลเมตรต่อชั่วโมง เป็นเวลา ${t} ชั่วโมง จะได้ระยะทางกี่กิโลเมตร`;
-          ans = String(v * t);
-        } else {
-          const y = rand(7, 14), diff = rand(3, 8);
-          text = `พี่อายุมากกว่าน้อง ${diff} ปี ถ้าน้องอายุ ${y} ปี ทั้งสองคนจะมีอายุรวมกันกี่ปี`;
-          ans = String(y + (y + diff));
-        }
-      } else if (lv === 2) {
-        const type = rand(0, 3);
-        if (type === 0) {
-          const cost = pick([200, 300, 400, 500, 600, 800, 1000]);
-          const profit = pick([10, 20, 25, 30, 40, 50]);
-          text = `ร้านค้าซื้อกระเป๋ามาราคา ${cost} บาท ต้องการขายให้ได้กำไร ${profit}% ต้องตั้งราคาขายกี่บาท`;
-          ans = String(cost + (cost * profit) / 100);
-        } else if (type === 1) {
-          const x = rand(15, 45), y = rand(5, x - 4);
-          const askMax = rand(0, 1) === 0;
-          text = `จำนวนสองจำนวนรวมกันได้ ${x + y} และมีผลต่างเท่ากับ ${x - y} จำนวนที่${askMax ? 'มากกว่า' : 'น้อยกว่า'}คือเท่าใด`;
-          ans = String(askMax ? x : y);
-        } else if (type === 2) {
-          const avg = rand(70, 90);
-          const x1 = avg + rand(-10, 10), x2 = avg + rand(-10, 10);
-          text = `นักเรียนสอบคณิตศาสตร์ 3 ครั้ง ได้คะแนนเฉลี่ย ${avg} คะแนน ถ้าสองครั้งแรกได้ ${x1} และ ${x2} คะแนน ครั้งที่สามได้กี่คะแนน`;
-          ans = String(avg * 3 - x1 - x2);
-        } else {
-          const [w1, d1, w2] = pick([[4, 6, 3], [6, 4, 8], [3, 8, 4], [5, 6, 3], [4, 9, 6], [6, 5, 10]]);
-          text = `คนงาน ${w1} คน ช่วยกันทาสีบ้านเสร็จภายใน ${d1} วัน ถ้าใช้คนงาน ${w2} คน จะทาสีบ้านเสร็จภายในกี่วัน`;
-          ans = String((w1 * d1) / w2);
-        }
-      } else {
-        const type = rand(0, 3);
-        if (type === 0) {
-          const s = pick([{ p: 20, mult: 120 }, { p: 25, mult: 125 }, { p: 50, mult: 150 }, { p: 10, mult: 110 }]);
-          const k = rand(2, 6);
-          text = `ขายสินค้าไปราคา ${s.mult * k} บาท ได้กำไร ${s.p}% เดิมซื้อสินค้านี้มาราคากี่บาท`;
-          ans = String(100 * k);
-        } else if (type === 1) {
-          const mid = rand(12, 40), askMax = rand(0, 1) === 0;
-          text = `จำนวนเต็มเรียงติดกัน 3 จำนวน มีผลรวมเท่ากับ ${mid * 3} จำนวนที่${askMax ? 'มากที่สุด' : 'น้อยที่สุด'}คือเท่าใด`;
-          ans = String(askMax ? mid + 1 : mid - 1);
-        } else if (type === 2) {
-          const [a, b] = pick([[2, 3], [2, 5], [3, 4], [3, 5], [4, 5]]);
