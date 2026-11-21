@@ -18,7 +18,6 @@
     .btn:active { transform: scale(0.98); }
     .btn-primary { background: #2563eb; color: #fff; }
     .btn-success { background: #16a34a; color: #fff; }
-    .btn-outline { background: #eff6ff; color: #1d4ed8; margin-top: 10px; }
 
     /* Drill Screen */
     .top-bar { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 8px; }
@@ -38,7 +37,8 @@
 
     /* Summary */
     .score-big { font-size: 48px; font-weight: 800; color: #2563eb; text-align: center; margin: 10px 0; }
-    .stat-card { background: #f8fafc; border-radius: 14px; padding: 14px; margin-bottom: 16px; font-size: 15px; line-height: 1.7; }
+    .stat-card { background: #f8fafc; border-radius: 14px; padding: 14px; margin-bottom: 10px; font-size: 15px; line-height: 1.7; }
+    .save-status { text-align: center; font-size: 13px; font-weight: 600; margin-bottom: 14px; min-height: 20px; }
     .cta-box { margin-top: 16px; padding: 14px; background: #eff6ff; border-radius: 14px; text-align: center; font-size: 14px; color: #1e40af; }
     .cta-box a { display: inline-block; margin-top: 8px; padding: 10px 18px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 10px; font-weight: 700; }
   </style>
@@ -53,9 +53,9 @@
       <input type="text" id="nickname" placeholder="เช่น น้องต้นกล้า">
       <label for="grade">ระดับชั้น</label>
       <select id="grade">
-        <option value="p1-3">ประถม 1 – 3 (จำนวนเต็ม)</option>
-        <option value="p4-6">ประถม 4 – 6 (เร็วๆ นี้)</option>
-        <option value="m1-3">มัธยม 1 – 3 (เร็วๆ นี้)</option>
+        <option value="ป.1-ป.3">ประถม 1 – 3 (จำนวนเต็ม)</option>
+        <option value="ป.4-ป.6">ประถม 4 – 6 (เร็วๆ นี้)</option>
+        <option value="ม.1-ม.3">มัธยม 1 – 3 (เร็วๆ นี้)</option>
       </select>
       <button class="btn btn-primary" onclick="startSession()">เริ่มฝึกชุดที่ 1 / 5</button>
     </div>
@@ -93,6 +93,7 @@
       <h1 id="set-done-title">จบชุดที่ 1 / 5</h1>
       <div class="score-big" id="set-score">15 / 15</div>
       <div class="stat-card" id="set-stat"></div>
+      <div class="save-status" id="set-save-status"></div>
       <button class="btn btn-success" id="next-set-btn" onclick="nextSet()">ลุยชุดที่ 2 / 5 ต่อเลย!</button>
     </div>
 
@@ -101,6 +102,7 @@
       <h1>เก่งมาก! ฝึกครบ 5 ชุดแล้ว</h1>
       <div class="score-big" id="final-score">75 / 75</div>
       <div class="stat-card" id="final-stat"></div>
+      <div class="save-status" id="final-save-status"></div>
       <button class="btn btn-primary" onclick="location.reload()">ฝึกใหม่อีกครั้ง</button>
       <div class="cta-box">
         ฝึกคิดเลขคล่องแล้ว อยากต่อยอดโจทย์แข่งขันและปรับพื้นฐาน?<br>
@@ -110,11 +112,13 @@
   </div>
 
   <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGZfr4SpJtZqbWwA3Vd7bIGb9Ll7hyFyZvJa3iYi8NA-p5lhH-XDUTHCGw8oEcrOOEqQ/exec';
     const TOTAL_SETS = 5;
     const QUESTIONS_PER_SET = 15;
     const TIME_LIMIT = 60;
 
     let studentName = localStorage.getItem('kt_name') || '';
+    let studentGrade = localStorage.getItem('kt_grade') || 'ป.1-ป.3';
     let currentSet = 1;
     let currentQ = 0;
     let questions = [];
@@ -126,6 +130,7 @@
     let timerId = null;
 
     if (studentName) document.getElementById('nickname').value = studentName;
+    if (studentGrade) document.getElementById('grade').value = studentGrade;
 
     function showScreen(id) {
       ['screen-start', 'screen-drill', 'screen-set-done', 'screen-final'].forEach(s => {
@@ -137,7 +142,7 @@
     function generateQuestions() {
       const list = [];
       for (let i = 0; i < QUESTIONS_PER_SET; i++) {
-        const type = Math.floor(Math.random() * 2); // 0 = บวก, 1 = ลบ (ป.1-ป.3)
+        const type = Math.floor(Math.random() * 2);
         let a, b, ans, text;
         if (type === 0) {
           a = Math.floor(Math.random() * 40) + 5;
@@ -155,10 +160,42 @@
       return list;
     }
 
+    function sendRecord(setNo, score, total, timeUsed, statusElId) {
+      const statusEl = document.getElementById(statusElId);
+      statusEl.textContent = '⏳ กำลังบันทึกคะแนน...';
+      statusEl.style.color = '#64748b';
+
+      const payload = {
+        name: studentName,
+        grade: studentGrade,
+        setNo: `ชุดที่ ${setNo}/${TOTAL_SETS}`,
+        score: score,
+        total: total,
+        timeUsed: timeUsed
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        statusEl.textContent = '✅ บันทึกคะแนนเข้าระบบเรียบร้อย';
+        statusEl.style.color = '#16a34a';
+      })
+      .catch(() => {
+        statusEl.textContent = '⚠️ บันทึกไม่สำเร็จ (โปรดเช็กอินเทอร์เน็ต)';
+        statusEl.style.color = '#dc2626';
+      });
+    }
+
     function startSession() {
       const nameInput = document.getElementById('nickname').value.trim();
       studentName = nameInput || 'นักเรียน';
+      studentGrade = document.getElementById('grade').value;
       localStorage.setItem('kt_name', studentName);
+      localStorage.setItem('kt_grade', studentGrade);
       currentSet = 1;
       totalScore = 0;
       totalTimeUsed = 0;
@@ -225,19 +262,21 @@
         document.getElementById('set-done-title').textContent = `จบชุดที่ ${currentSet} / ${TOTAL_SETS}`;
         document.getElementById('set-score').textContent = `${setScore} / ${QUESTIONS_PER_SET}`;
         document.getElementById('set-stat').innerHTML = `
-          👤 น้อง: <b>${studentName}</b><br>
+          👤 น้อง: <b>${studentName}</b> (${studentGrade})<br>
           ⏱️ ใช้เวลาไป: <b>${used} วินาที</b>
         `;
         document.getElementById('next-set-btn').textContent = `ลุยชุดที่ ${currentSet + 1} / ${TOTAL_SETS} ต่อเลย!`;
         showScreen('screen-set-done');
+        sendRecord(currentSet, setScore, QUESTIONS_PER_SET, used, 'set-save-status');
       } else {
         document.getElementById('final-score').textContent = `${totalScore} / ${TOTAL_SETS * QUESTIONS_PER_SET}`;
         document.getElementById('final-stat').innerHTML = `
-          👤 น้อง: <b>${studentName}</b><br>
+          👤 น้อง: <b>${studentName}</b> (${studentGrade})<br>
           ⏱️ เวลารวม 5 ชุด: <b>${totalTimeUsed} วินาที</b><br>
           🎯 ความแม่นยำ: <b>${Math.round((totalScore / (TOTAL_SETS * QUESTIONS_PER_SET)) * 100)}%</b>
         `;
         showScreen('screen-final');
+        sendRecord(currentSet, setScore, QUESTIONS_PER_SET, used, 'final-save-status');
       }
     }
 
